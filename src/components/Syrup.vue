@@ -1,5 +1,5 @@
 <template>
-  <div class="syrup"></div>
+  <div :style="dynamicStyle" class="syrup"></div>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +28,12 @@ const Syrups: Syrup[] = [
 
 const props = withDefaults(defineProps<Prop>(), {
   name: "Vanilla",
+});
+const dynamicStyle = computed(() => {
+  const syrup = Syrups.find((syrup) => syrup.name === props.name);
+  return {
+    backgroundColor: syrup?.color,
+  };
 });
 </script>
 <style lang="scss" scoped>

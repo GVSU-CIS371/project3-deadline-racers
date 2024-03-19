@@ -1,11 +1,12 @@
 <template>
-  <div class="froth">
+  <div :style="dynamicStyle" class="froth">
     <div v-for=" in 5" class="foam"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+
 type Prop = {
   name: string;
 };
@@ -30,6 +31,12 @@ const Creamers: Creamer[] = [
 
 const props = withDefaults(defineProps<Prop>(), {
   name: "Milk",
+});
+const dynamicStyle = computed(() => {
+  const creamer = Creamers.find((creamer) => creamer.name === props.name);
+  return {
+    backgroundColor: creamer?.color,
+  };
 });
 </script>
 <style lang="scss" scoped>

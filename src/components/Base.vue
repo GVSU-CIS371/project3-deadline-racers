@@ -1,5 +1,5 @@
 <template>
-  <div class="baseBeverage"></div>
+  <div :style="dynamicStyle" class="baseBeverage"></div>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +28,13 @@ const Bases: BaseBeverage[] = [
 
 const props = withDefaults(defineProps<Prop>(), {
   name: "Black Tea",
+});
+
+const dynamicStyle = computed(() => {
+  const base = Bases.find((base) => base.name === props.name);
+  return {
+    backgroundColor: base?.color,
+  };
 });
 </script>
 
