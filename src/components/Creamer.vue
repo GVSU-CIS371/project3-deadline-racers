@@ -1,9 +1,6 @@
 <template>
-  <div class="froth">
-    <div v-for=" in 5"
-        class="foam"
-        :style="{ backgroundColor: creamerColor}">
-  </div>
+  <div :style="dynamicStyle" class="froth">
+    <div v-for=" in 5" class="foam"></div>
   </div>
 </template>
 
@@ -33,14 +30,16 @@
     },
   ];
 
+
   const props = withDefaults(defineProps<Prop>(), {
     name: "Milk",
   });
-
-  // Compute the creamer color based on the selected name
-  const creamerColor = computed(() => {
-    const selectedCreamer = Creamers.find(creamer => creamer.name === props.name);
-    return selectedCreamer?.color;
+  
+  const dynamicStyle = computed(() => {
+    const creamer = Creamers.find((creamer) => creamer.name === props.name);
+    return {
+      backgroundColor: creamer?.color,
+    };
   });
 
 </script>
