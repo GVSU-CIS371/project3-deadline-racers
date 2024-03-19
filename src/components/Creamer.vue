@@ -1,6 +1,6 @@
 <template>
-  <div :style="dynamicStyle" class="froth">
-    <div v-for=" in 5" class="foam"></div>
+  <div class="froth">
+    <div v-for=" in 5" class="foam" :style="dynamicStyle"></div>
   </div>
 </template>
 

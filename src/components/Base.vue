@@ -32,28 +32,14 @@
 
   const props = withDefaults(defineProps<Prop>(), {
     name: "Black Tea",
-    color: "#8B4513",
-  },
-  {
-    name: "Green Tea",
-    color: "#C8E6C9",
-  },
-  {
-    name: "Coffee",
-    color: "#6F4E37",
-  },
-];
+  });
 
-const props = withDefaults(defineProps<Prop>(), {
-  name: "Black Tea",
-});
-
-const dynamicStyle = computed(() => {
-  const base = Bases.find((base) => base.name === props.name);
-  return {
-    backgroundColor: base?.color,
-  };
-});
+  const dynamicStyle = computed(() => {
+    const base = Bases.find((base) => base.name === props.name);
+    return {
+      backgroundColor: base?.color,
+    };
+  });
 
 </script>
 
