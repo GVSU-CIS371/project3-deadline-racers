@@ -1,35 +1,44 @@
 <template>
-  <div class="syrup"></div>
+  <div class="syrup" :style="{ backgroundColor: syrupColor}"></div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-type Prop = {
-  name: string;
-};
-type Syrup = {
-  name: string;
-  color: string;
-};
-const Syrups: Syrup[] = [
-  {
-    name: "Vanilla",
-    color: "#FFEFD5",
-  },
-  {
-    name: "Caramel",
-    color: "#DAA520",
-  },
-  {
-    name: "Hazelnut",
-    color: "#6B4423",
-  },
-];
+  import { computed } from "vue";
 
-const props = withDefaults(defineProps<Prop>(), {
-  name: "Vanilla",
-});
+  type Prop = {
+    name: string;
+  };
+  type Syrup = {
+    name: string;
+    color: string;
+  };
+  const Syrups: Syrup[] = [
+    {
+      name: "Vanilla",
+      color: "#FFEFD5",
+    },
+    {
+      name: "Caramel",
+      color: "#DAA520",
+    },
+    {
+      name: "Hazelnut",
+      color: "#6B4423",
+    },
+  ];
+
+  const props = withDefaults(defineProps<Prop>(), {
+    name: "Vanilla",
+  });
+
+  // Compute the syrup color based on the selected name
+  const syrupColor = computed(() => {
+    const selectedSyrup = Syrups.find(syrup => syrup.name === props.name);
+    return selectedSyrup?.color;
+  });
+
 </script>
+
 <style lang="scss" scoped>
 .syrup {
   transform: translateY(400%);

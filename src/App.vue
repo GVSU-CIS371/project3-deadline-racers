@@ -1,8 +1,13 @@
 <template>
   <div>
-    <Beverage :isIced="currentTemp === 'Cold'" />
+    <Beverage :isIced="currentTemp === 'Cold'" 
+              :creamer="currentCreamer"
+              :syrup="currentSyrup"
+              :beverage="currentBaseBeverage"
+    />
     <ul>
       <li>
+        Temperature: 
         <template v-for="temp in temps" :key="temp">
           <label>
             <input
@@ -17,6 +22,7 @@
         </template>
       </li>
       <li>
+        Creamer:
         <template v-for="creamer in creamers" :key="creamer">
           <label>
             <input
@@ -31,6 +37,7 @@
         </template>
       </li>
       <li>
+        Syrup: 
         <template v-for="syrup in syrups" :key="syrup">
           <label>
             <input
@@ -45,6 +52,7 @@
         </template>
       </li>
       <li>
+        Base Beverage:
         <template v-for="beverage in baseBeverages" :key="beverage">
           <label>
             <input
@@ -69,11 +77,13 @@ import Beverage from "./components/Beverage.vue";
 const temps = ref(["Hot", "Cold"]);
 const currentTemp = ref("Hot");
 const creamers = ref(["None", "Milk", "Cream", "Half & Half"]);
-const currentCreamer = ref("None");
+const currentCreamer = ref("Milk");
 const syrups = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
-const currentSyrup = ref("None");
+const currentSyrup = ref("Vanilla");
 const baseBeverages = ref(["Coffee", "Green Tea", "Black Tea"]);
-const currentBaseBeverage = ref("Coffee");
+const currentBaseBeverage = ref("Black Tea");
+
+console.log(currentCreamer, currentSyrup, currentBaseBeverage)
 </script>
 
 <style lang="scss">
