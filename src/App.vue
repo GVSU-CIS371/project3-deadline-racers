@@ -5,6 +5,17 @@
               :syrup="currentSyrup"
               :beverage="currentBaseBeverage"
     />
+    <label for="name">Name:</label>
+    <input id="name" v-model="name" type="text" />
+
+    <button @click="makeBeverage">Make Beverage</button>
+    <div v-for="(recipe, index) in store.recipes" :key="index">
+      <h2>{{ recipe.name }}</h2>
+      <p>Temperature: {{ recipe.temperature }}</p>
+      <p>Creamer: {{ recipe.creamer }}</p>
+      <p>Syrup: {{ recipe.syrup }}</p>
+      <p>Base Beverage: {{ recipe.baseBeverage }}</p>
+    </div>
     <ul>
       <li>
         Temperature: 
@@ -72,8 +83,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useStore } from "./store";
 import Beverage from "./components/Beverage.vue";
 // Define reactive data
+const name = ref('');
+const store = useStore();
 const temps = ref(["Hot", "Cold"]);
 const currentTemp = ref("Hot");
 const creamers = ref(["None", "Milk", "Cream", "Half & Half"]);
@@ -82,6 +96,10 @@ const syrups = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
 const currentSyrup = ref("Vanilla");
 const baseBeverages = ref(["Coffee", "Green Tea", "Black Tea"]);
 const currentBaseBeverage = ref("Black Tea");
+const makeBeverage = () => {
+  store.addRecipe(name.value);
+  name.value = '';
+};
 
 console.log(currentCreamer, currentSyrup, currentBaseBeverage)
 </script>
