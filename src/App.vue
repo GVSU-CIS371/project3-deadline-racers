@@ -79,10 +79,14 @@
       </li>
     </ul>
   </div>
+  <div v-for="recipe in store.recipes" :key="recipe.name" @click="showBeverage(recipe)">
+    {{ recipe.name }}
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { onMounted } from "vue";
 import { useStore } from "./store";
 import Beverage from "./components/Beverage.vue";
 // Define reactive data
@@ -95,13 +99,40 @@ const currentCreamer = ref("Milk");
 const syrups = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
 const currentSyrup = ref("Vanilla");
 const baseBeverages = ref(["Coffee", "Green Tea", "Black Tea"]);
-const currentBaseBeverage = ref("Black Tea");
+const currentBaseBeverage = ref("Coffee");
+onMounted(() => {
+  store.$subscribe((mutation, state) => {
+    if (mutation.type === 'patch object') {
+      console.log('Patch object:', mutation.payload);
+    }
+  });
+  store.$patch({
+    name: name.value,
+    temperature: currentTemp.value,
+    creamer: currentCreamer.value,
+    syrup: currentSyrup.value,
+    baseBeverage: currentBaseBeverage.value
+  });
+});
+const showBeverage = (recipe) => {
+  currentTemp.value = recipe.temperature;
+  currentCreamer.value = recipe.creamer;
+  currentSyrup.value = recipe.syrup;
+  currentBaseBeverage.value = recipe.baseBeverage;
+};
 const makeBeverage = () => {
+  store.$patch({
+    name: name.value,
+    temperature: currentTemp.value,
+    creamer: currentCreamer.value,
+    syrup: currentSyrup.value,
+    baseBeverage: currentBaseBeverage.value
+  });
   store.addRecipe(name.value);
   name.value = '';
 };
 
-console.log(currentCreamer, currentSyrup, currentBaseBeverage)
+console.log(currentCreamer.value, currentSyrup.value, currentBaseBeverage.value)
 </script>
 
 <style lang="scss">

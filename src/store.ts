@@ -10,6 +10,7 @@ type Recipe = {
 export const useStore = defineStore({
   id: 'main',
 state: () => ({
+    name: '',
     temperature: 'Hot',
     creamer: 'None',
     syrup: 'None',
