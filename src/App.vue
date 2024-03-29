@@ -5,6 +5,17 @@
               :syrup="currentSyrup"
               :beverage="currentBaseBeverage"
     />
+    <label for="name">Name:</label>
+    <input id="name" v-model="name" type="text" />
+
+    <button @click="makeBeverage">Make Beverage</button>
+    <div v-for="(recipe, index) in store.recipes" :key="index">
+      <h2>{{ recipe.name }}</h2>
+      <p>Temperature: {{ recipe.temperature }}</p>
+      <p>Creamer: {{ recipe.creamer }}</p>
+      <p>Syrup: {{ recipe.syrup }}</p>
+      <p>Base Beverage: {{ recipe.baseBeverage }}</p>
+    </div>
     <ul>
       <li>
         Temperature: 
@@ -68,12 +79,19 @@
       </li>
     </ul>
   </div>
+  <div v-for="recipe in store.recipes" :key="recipe.name" @click="showBeverage(recipe)">
+    {{ recipe.name }}
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { onMounted } from "vue";
+import { useStore } from "./store";
 import Beverage from "./components/Beverage.vue";
 // Define reactive data
+const name = ref('');
+const store = useStore();
 const temps = ref(["Hot", "Cold"]);
 const currentTemp = ref("Hot");
 const creamers = ref(["None", "Milk", "Cream", "Half & Half"]);
@@ -81,9 +99,40 @@ const currentCreamer = ref("Milk");
 const syrups = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
 const currentSyrup = ref("Vanilla");
 const baseBeverages = ref(["Coffee", "Green Tea", "Black Tea"]);
-const currentBaseBeverage = ref("Black Tea");
+const currentBaseBeverage = ref("Coffee");
+onMounted(() => {
+  store.$subscribe((mutation, state) => {
+    if (mutation.type === 'patch object') {
+      console.log('Patch object:', mutation.payload);
+    }
+  });
+  store.$patch({
+    name: name.value,
+    temperature: currentTemp.value,
+    creamer: currentCreamer.value,
+    syrup: currentSyrup.value,
+    baseBeverage: currentBaseBeverage.value
+  });
+});
+const showBeverage = (recipe) => {
+  currentTemp.value = recipe.temperature;
+  currentCreamer.value = recipe.creamer;
+  currentSyrup.value = recipe.syrup;
+  currentBaseBeverage.value = recipe.baseBeverage;
+};
+const makeBeverage = () => {
+  store.$patch({
+    name: name.value,
+    temperature: currentTemp.value,
+    creamer: currentCreamer.value,
+    syrup: currentSyrup.value,
+    baseBeverage: currentBaseBeverage.value
+  });
+  store.addRecipe(name.value);
+  name.value = '';
+};
 
-console.log(currentCreamer, currentSyrup, currentBaseBeverage)
+console.log(currentCreamer.value, currentSyrup.value, currentBaseBeverage.value)
 </script>
 
 <style lang="scss">
