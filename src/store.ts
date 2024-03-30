@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+
 type Recipe = {
     name: string;
     temperature: string;

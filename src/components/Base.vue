@@ -36,7 +36,8 @@
   const props = withDefaults(defineProps<Prop>(), {
     name: "Black Tea",
     color: "#8B4513",
-  });
+  },
+  );
 
 // const props = withDefaults(defineProps<Prop>(), {
 //   name: "Black Tea",

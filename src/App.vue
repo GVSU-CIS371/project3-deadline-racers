@@ -1,97 +1,116 @@
 <template>
-  <div>
+  <div class="content">
     <Beverage :isIced="currentTemp === 'Cold'" 
               :creamer="currentCreamer"
               :syrup="currentSyrup"
               :beverage="currentBaseBeverage"
     />
-    <label for="name">Name:</label>
-    <input id="name" v-model="name" type="text" />
-
-    <button @click="makeBeverage">Make Beverage</button>
-    <div v-for="(recipe, index) in store.recipes" :key="index">
-      <h2>{{ recipe.name }}</h2>
-      <p>Temperature: {{ recipe.temperature }}</p>
-      <p>Creamer: {{ recipe.creamer }}</p>
-      <p>Syrup: {{ recipe.syrup }}</p>
-      <p>Base Beverage: {{ recipe.baseBeverage }}</p>
+    <div class="user-input">
+      <label for="text">
+        <input id="text" v-model="name" type="text" />
+      </label>
+      <button @click="makeBeverage">Make Beverage</button>
     </div>
-    <ul>
-      <li>
-        Temperature: 
-        <template v-for="temp in temps" :key="temp">
-          <label>
-            <input
-              type="radio"
-              name="temperature"
-              :id="`r${temp}`"
-              :value="temp"
-              v-model="currentTemp"
-            />
-            {{ temp }}
-          </label>
-        </template>
-      </li>
-      <li>
-        Creamer:
-        <template v-for="creamer in creamers" :key="creamer">
-          <label>
-            <input
-              type="radio"
-              name="creamer"
-              :id="`r${creamer}`"
-              :value="creamer"
-              v-model="currentCreamer"
-            />
-            {{ creamer }}
-          </label>
-        </template>
-      </li>
-      <li>
-        Syrup: 
-        <template v-for="syrup in syrups" :key="syrup">
-          <label>
-            <input
-              type="radio"
-              name="syrup"
-              :id="`r${syrup}`"
-              :value="syrup"
-              v-model="currentSyrup"
-            />
-            {{ syrup }}
-          </label>
-        </template>
-      </li>
-      <li>
-        Base Beverage:
-        <template v-for="beverage in baseBeverages" :key="beverage">
-          <label>
-            <input
-              type="radio"
-              name="beverage"
-              :id="`r${beverage}`"
-              :value="beverage"
-              v-model="currentBaseBeverage"
-            />
-            {{ beverage }}
-          </label>
-        </template>
-      </li>
-    </ul>
-  </div>
-  <div v-for="recipe in store.recipes" :key="recipe.name" @click="showBeverage(recipe)">
-    {{ recipe.name }}
+    <div class="user-input-options">
+      <ul>
+        <li>
+          Temperature: 
+          <template v-for="temp in temps" :key="temp">
+            <label>
+              <input
+                type="radio"
+                name="temperature"
+                :id="`r${temp}`"
+                :value="temp"
+                v-model="currentTemp"
+              />
+              {{ temp }}
+            </label>
+          </template>
+        </li>
+        <li>
+          Creamer:
+          <template v-for="creamer in creamers" :key="creamer">
+            <label>
+              <input
+                type="radio"
+                name="creamer"
+                :id="`r${creamer}`"
+                :value="creamer"
+                v-model="currentCreamer"
+              />
+              {{ creamer }}
+            </label>
+          </template>
+        </li>
+        <li>
+          Syrup: 
+          <template v-for="syrup in syrups" :key="syrup">
+            <label>
+              <input
+                type="radio"
+                name="syrup"
+                :id="`r${syrup}`"
+                :value="syrup"
+                v-model="currentSyrup"
+              />
+              {{ syrup }}
+            </label>
+          </template>
+        </li>
+        <li>
+          Base Beverage:
+          <template v-for="beverage in baseBeverages" :key="beverage">
+            <label>
+              <input
+                type="radio"
+                name="beverage"
+                :id="`r${beverage}`"
+                :value="beverage"
+                v-model="currentBaseBeverage"
+              />
+              {{ beverage }}
+            </label>
+          </template>
+        </li>
+      </ul>
+    </div>
+    <h3>Saved Beverages:</h3>
+    <div class="saved-beverages-box">
+      <div class="saved-beverages">
+        <label v-for="(recipe, index) in store.recipes" :key="index">
+          <input
+            type="radio"
+            name="selectedRecipe"
+            :value="index"
+            v-model="selectedRecipeIndex"
+          />
+          {{ recipe.name }}
+        </label>
+      </div>
+      
+      <div v-if="selectedRecipeIndex !== null">
+        <br/>
+        <span><strong>Ingredients: </strong> </span>
+        <span> {{ store.recipes[selectedRecipeIndex].temperature }} 
+            {{ store.recipes[selectedRecipeIndex].creamer }}
+            {{ store.recipes[selectedRecipeIndex].syrup }}
+            {{ store.recipes[selectedRecipeIndex].baseBeverage }}
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { onMounted } from "vue";
 import { useStore } from "./store";
 import Beverage from "./components/Beverage.vue";
 // Define reactive data
 const name = ref('');
 const store = useStore();
+const selectedRecipeIndex = ref<number | null>(null);
 const temps = ref(["Hot", "Cold"]);
 const currentTemp = ref("Hot");
 const creamers = ref(["None", "Milk", "Cream", "Half & Half"]);
@@ -100,6 +119,7 @@ const syrups = ref(["None", "Vanilla", "Caramel", "Hazelnut"]);
 const currentSyrup = ref("Vanilla");
 const baseBeverages = ref(["Coffee", "Green Tea", "Black Tea"]);
 const currentBaseBeverage = ref("Coffee");
+
 onMounted(() => {
   store.$subscribe((mutation, state) => {
     if (mutation.type === 'patch object') {
@@ -114,12 +134,14 @@ onMounted(() => {
     baseBeverage: currentBaseBeverage.value
   });
 });
+
 const showBeverage = (recipe) => {
   currentTemp.value = recipe.temperature;
   currentCreamer.value = recipe.creamer;
   currentSyrup.value = recipe.syrup;
   currentBaseBeverage.value = recipe.baseBeverage;
 };
+
 const makeBeverage = () => {
   store.$patch({
     name: name.value,
@@ -132,7 +154,16 @@ const makeBeverage = () => {
   name.value = '';
 };
 
-console.log(currentCreamer.value, currentSyrup.value, currentBaseBeverage.value)
+watch(selectedRecipeIndex, (newValue) => {
+    if (newValue !== null) {
+      const selectedRecipe = store.recipes[newValue];
+      currentTemp.value = selectedRecipe.temperature;
+      currentCreamer.value = selectedRecipe.creamer;
+      currentSyrup.value = selectedRecipe.syrup;
+      currentBaseBeverage.value = selectedRecipe.baseBeverage;
+    }
+  });
+
 </script>
 
 <style lang="scss">
@@ -148,5 +179,41 @@ html {
 }
 ul {
   list-style: none;
+}
+.content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .user-input{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    button{
+      background-color: wheat;
+      width: 8rem;
+      height: 2rem;
+      border-radius: 5px;
+      border: none;
+    }
+    input{
+      height: 1.8rem;
+      border-radius: 5px;
+      border: none;
+    }
+  }
+  .user-input-options{
+    padding-right: 1.5rem;
+  }
+  .saved-beverages-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .saved-beverages{
+      display: flex;
+    }
+  }
 }
 </style>
