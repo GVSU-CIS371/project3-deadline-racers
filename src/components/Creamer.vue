@@ -1,11 +1,14 @@
 <template>
   <div class="froth">
-    <div v-for=" in 5" class="foam" :style="dynamicStyle"></div>
+    <div :style="dynamicStyle" v-for=" in 5" class="foam"></div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed } from "vue";
+  import { useStore } from "../store";
+  const store = useStore();
+  const creamer = computed(() => store.baseBeverage);
 
   type Prop = {
     name: string;
@@ -38,7 +41,7 @@
   const dynamicStyle = computed(() => {
     const creamer = Creamers.find((creamer) => creamer.name === props.name);
     return {
-      backgroundColor: creamer?.color,
+      background: creamer?.color,
     };
   });
 
